@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<title>Stock Market Game</title>
+	  <link rel="stylesheet" href="css/foundation.css">
+	  <link rel="stylesheet" href="css/app.css">
+	  <script src="js/vendor/modernizr.js"></script>
+	</head>
+	<body>
+		<div id="stock_market_info_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+			<h2 id="modalTitle">The Stock Market Game</h2>
+		  <p class="lead">Warning : You can not save your game.</p>
+		  <p class="lead">Disclosure : The stock data is from yahoo finance. Please see their fine print to see what the limitations are of this data. I can not guarantee accuracy of the data.</p>
+		  <p>This is a simple game that is a project of mine. It is by no means a complete application. Enjoy.</p>
+		  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+		</div>
+		<div class="row header">
+			<div class="small-12 medium-12 large-12 columns panel" id = "title_box" >
+				<h1>Stock Market Game</h1>
+			</div>
+		</div>
+		<div class = "row">
+			<div class = "large-8 columns panel" id = "sidebar">
+				<div class = "row">
+					<div class = "large-12 columns">
+						<h3>Stocks owned</h3>
+					</div>
+				</div>
+				<div class "row" id = "the_list_below">
+					<div class = "large-2 columns">
+						<a href = "#" id = "buy_stock_link" class = "button tiny">Buy stock</a>
+					</div>
+					<div class = "large-10 columns">
+						<a href = "#" id = "sell_stock_link" class = "button tiny">Sell stock</a>
+					</div>
+				</div>
+				<div class "row" id = "sidebar_new_stock_search" style = "display: none;" data-equalizer >
+					<form id = "sidebar_get_stock">
+						<div class = "large-2 columns" data-equalizer-watch >
+							<lable for = "stock_symbol">Enter a Stock Symbol</lable>
+						</div>
+						<div class = "large-4 columns" data-equalizer-watch >
+							<input name = "stock_symbol" type = "text" id = "sidebar_get_stock_type">
+						</div>
+						<div class = "large-2 columns" data-equalizer-watch >
+							<lable for = "stock_amount">How Many?</lable>
+						</div>
+						<div class = "large-2 columns" data-equalizer-watch >
+							<input name = "stock_amount" type = "number" id = "sidebar_get_stock_amount">
+						</div>
+						<div class = "large-2 columns" data-equalizer-watch >
+							<input type = "submit" value = "Buy" class = "button tiny" id = "buy_sell_button">
+						</div>
+					</form>
+				</div>
+				<div id = "sample">
+					<div class = "row sidebar_stock" style = "display: none;">
+						<form class = "update_button">
+							<div class = "large-1 columns symbol"></div>
+							<div class = "large-1 columns amount"></div>
+							<div class = "large-2 columns priceBought"></div>
+							<div class = "large-2 columns currentPrice"></div>
+							<div class = "large-2 columns currentValue"></div>
+							<div class = "large-2 columns gainLoss"></div>
+							<div class = "large-1 columns">
+								<a href = "#" class = "buy_stock_link button tiny">Buy</a>
+							</div>
+							<div class = "large-1 columns">
+								<a href = "#" class = "sell_stock_link button tiny">Sell</a>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class = "row sidebar_stock">
+						<div class = "large-1 columns symbol">Symbol</div>
+						<div class = "large-1 columns amount">Amount</div>
+						<div class = "large-2 columns priceBought">Purchase Price</div>
+						<div class = "large-2 columns currentPrice">Current Price</div>
+						<div class = "large-2 columns currentValue">Current Value</div>
+						<div class = "large-2 columns left gainLoss">Gain or Loss</div>
+				</div>
+			</div>
+			<div class = "large-1 columns">
+			</div>
+			<div class = "large-3 columns panel">
+				<div class = "row">
+					<div class = "large-12 columns">
+						<h3>Account details</h3>
+					</div>
+				</div>
+				<div class = "row">
+					<div class = "large-12 columns">
+						<h3>cash :</h3>
+						<p id = "bank_cash">10000.00</p>
+						<h3>stock value :</h3>
+						<p id = "bank_stock_value">0.00</p>
+						<h3>total net worth :</h3>
+						<p id = "bank_total">10000.00</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="js/vendor/jquery.js"></script>
+	  <script src="js/foundation.min.js"></script>
+	  <script src="js/stock_market_game.js"></script>
+	  <script>
+	    $(document).foundation();
+	  </script>
+	</body>
+</html>
