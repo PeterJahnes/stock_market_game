@@ -1,9 +1,13 @@
 class UsersController < ApplicationController
 
-	# before_action :set_user, only: [:show, :edit, :update, :destroy]
+	before_action :set_user, only: [:show, :edit, :update, :destroy]
 
 	def new
     @user = User.new
+	end
+
+	def edit
+		@edit = true
 	end
 
   def create
@@ -14,10 +18,23 @@ class UsersController < ApplicationController
         format.json { render json: {status: :created, name: @user.first_name} }
       else
         format.html { render :new }
-        format.json { render json: {status: "failed to create user"} }
+        format.json { render json: {status: "failed to create account"} }
       end
     end
   end
+
+  def update
+    respond_to do |format|
+      if @user.update(user_params)
+        format.html { redirect_to root_path, notice: 'Your account was successfully updated.' }
+        format.json { render json: {status: :updated, name: @user.first_name} }
+      else
+        format.html { render :new }
+        format.json { render json: {status: "failed to update your account"} }
+      end
+    end
+  end
+
   private
 
     def set_user
