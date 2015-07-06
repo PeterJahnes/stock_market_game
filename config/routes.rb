@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   root 'stock_market_game#index'
   get 'stock_market_game/offset' => 'stock_market_game#offset'
 
-  resources :users except: [:index, :destroy]
+  resources :users, except: [:index, :destroy]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
