@@ -61,7 +61,7 @@ dollarAttributes = function(atty){
 
 offsetCheck = function(){
 	$.ajax({
-	  url: "stock_market_game/offset",
+	  url: "/stock_market_game/offset",
 	  dataType: "json"
   }).done(function(offsetData){
   	console.log("offsetCheck" + offsetData.offset)
