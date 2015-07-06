@@ -13,6 +13,7 @@
   <div>
     <h2><%= @edit ? "Update your " : "Create Your "%>Account</h2>
   </div>
+  <% if @edit != true %>
   <div>
     <%= f.label :email %><br>
     <%= f.email_field :email %>
@@ -21,6 +22,7 @@
     <%= f.label :password %><br>
     <%= f.password_field  :password %>
   </div>
+  <% end %>
   <div>
     <%= f.label :first_name %><br>
     <%= f.text_field :first_name %>
