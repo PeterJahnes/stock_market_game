@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   get 'stock_market_game/offset' => 'stock_market_game#offset'
 
   resources :users, except: [:index, :destroy]
+  get 'login' => 'sessions#login'
+  post 'login' => 'sessions#loginp'
+  get 'logout' => 'sessions#logout'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
