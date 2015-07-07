@@ -1,0 +1,19 @@
+<nav class="top-bar" data-topbar role="navigation">
+  <ul class="title-area">
+    <li class="name">
+      <h1><%= link_to 'Stock Market Game', root_path %></h1>
+    </li>
+    <li class="toggle-topbar icon"><a href="#"><span>Menu</span></a></li>
+  </ul>
+  <section class="top-bar-section">
+    <ul class="right">
+      <% if current_user %>
+        <li><%= link_to current_user.first_name, current_user %></li>
+        <li><%= link_to 'logout', logout_path %></li>
+      <% else %>
+        <li><%= link_to 'login', login_path %></li>
+        <li><%= link_to 'signup', signup_path %></li>
+      <% end %>
+    </ul>
+  </section>
+</nav>
