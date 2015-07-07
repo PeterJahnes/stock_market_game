@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'stock_market_game/offset' => 'stock_market_game#offset'
 
   resources :users, except: [:index, :destroy]
+  get '/signup' => 'users#new'
   resources :sessions, only: [:new, :create, :destroy]
   get '/login' => 'sessions#new'
   get '/logout' => 'sessions#destroy'
