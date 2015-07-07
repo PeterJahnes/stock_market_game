@@ -8,11 +8,11 @@
   <section class="top-bar-section">
     <ul class="right">
       <% if current_user %>
-        <li><%= link_to current_user.first_name, current_user %></li>
-        <li><%= link_to 'logout', logout_path %></li>
+        <li><%= link_to current_user.first_name, current_user, id: "user_profile_link" %></li>
+        <li><%= link_to 'logout', logout_path, id: "logout_link" %></li>
       <% else %>
-        <li><%= link_to 'login', login_path %></li>
-        <li><%= link_to 'signup', signup_path %></li>
+        <li><%= link_to 'login', login_path, id: "login_link" %></li>
+        <li><%= link_to 'signup', signup_path, id: "signup_link" %></li>
       <% end %>
     </ul>
   </section>
