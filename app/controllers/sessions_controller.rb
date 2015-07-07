@@ -7,6 +7,7 @@ class SessionsController < ApplicationController
 		@user = User.find_by email: user_params[:email]
 		respond_to do |format|
 	    if @user && @user.authenticate(user_params[:password])
+	    	session[:user_id] = @user.id
 	      format.html { redirect_to root_path, notice: 'Welcome.' }
 	      format.json { render json: {status: :created, name: @user.first_name} }
 	    else
