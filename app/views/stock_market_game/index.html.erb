@@ -5,6 +5,65 @@
   <p>This is a simple game that is a project of mine. It is by no means a complete application. Enjoy.</p>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
+<div id="account_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+	<div class = "row" id = "account_modal_login">
+		<%= form_for :session, url: sessions_path, html: {id: "login_form"} do |f|%>
+		  <div>
+		    <h2>Login</h2>
+		  </div>
+		  <div>
+		    <%= f.label :email %><br>
+		    <%= f.email_field :email %>
+		  </div>
+		  <div>
+		    <%= f.label :password %><br>
+		    <%= f.password_field  :password %>
+		  </div>
+		  <div>
+		    <%= f.submit("Login", :class => "submit button", :id => "submit") %>
+		  </div>
+		<% end %>
+	</div>
+	<div class = "row" id = "account_modal_signup">
+		<%= form_for(@user, html: { class: :form, id: "signup_form"}) do |f| %>
+		  <% if @user.errors.any? %>
+		    <div id="error_explanation">
+		      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+		      <ul>
+		      <% @user.errors.full_messages.each do |message| %>
+		        <li><%= message %></li>
+		      <% end %>
+		      </ul>
+		    </div>
+		  <% end %>
+		  <div>
+		    <%= f.label :email %><br>
+		    <%= f.email_field :email %>
+		  </div>
+		  <div>
+		    <%= f.label :password %><br>
+		    <%= f.password_field  :password %>
+		  </div>
+		  <div>
+		    <%= f.label :first_name %><br>
+		    <%= f.text_field :first_name %>
+		  </div>
+		  <div>
+		    <%= f.label :middle_name %><br>
+		    <%= f.text_field :middle_name %>
+		  </div>
+		  <div>
+		    <%= f.label :last_name %><br>
+		    <%= f.text_field :last_name %>
+		  </div>
+		  <div>
+		    <% button_text = (@edit ? "Save" : "Sign up")%>
+		    <%= f.submit(button_text, :class => "submit button", :id => "submit") %>
+		  </div>
+		<% end %>
+	</div>
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
 <div class = "row">
 	<div class = "large-8 columns panel" id = "sidebar">
 		<div class = "row">
@@ -24,7 +83,7 @@
 			<div class = "large-12 columns">
 				<form id = "sidebar_get_stock">
 					<lable for = "stock_symbol">Enter a Stock Symbol</lable>
-					<input name = "stock_symbol" type = "text" id = "sidebar_get_stock_type">
+					<input name = "stock_symbol" type = "text" id = "sidebar_get_stock_type" autofocus>
 					<lable for = "stock_amount">How Many?</lable>
 					<input name = "stock_amount" type = "number" id = "sidebar_get_stock_amount">
 					<input type = "submit" value = "Buy" class = "button" id = "buy_sell_button">
@@ -62,6 +121,13 @@
 	</div>
 	<div class = "large-3 columns panel">
 		<div class = "row">
+			<div class = "large-12 columns warning">
+				<a href="https://www.yahoo.com/?ilc=401" target="_blank"> <img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/> </a>
+			</div>
+			<div class = "large-12 columns warning">
+				<h4>Not Saved!</h4>
+				<p>login or signup to save</p>
+			</div>
 			<div class = "large-12 columns">
 				<h3>Account details</h3>
 			</div>
