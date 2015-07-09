@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'stock_market_game#index'
   get 'stock_market_game/offset' => 'stock_market_game#offset'
+  get 'stock_market_game/load' => 'stock_market_game#load'
+  post 'stock_market_game/save' => 'stock_market_game#save'
 
   resources :users, except: [:index, :destroy]
   get '/signup' => 'users#new'
