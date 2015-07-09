@@ -3,9 +3,7 @@ class StockMarketGameController < ApplicationController
 	include ApplicationHelper
 
 	def index
-		if !current_user
-	    @user = User.new
-	  end
+	  @user = User.new
 	end
 
 	def offset
@@ -17,6 +15,7 @@ class StockMarketGameController < ApplicationController
 
 	def save
 		if current_user
+			saved_game = game_params[:saved_game]
 			@user = current_user
 			respond_to do |format|
 				if @user.update(saved_game: saved_game)

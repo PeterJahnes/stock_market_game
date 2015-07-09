@@ -110,7 +110,6 @@ updateAllStocks = function() {
 	  		myBankAccount.myOwnedStock[stock.symbol].updatePrice(stock.LastTradePriceOnly);
 	  		updateSidebarStock(myBankAccount.myOwnedStock[stock.symbol]);
 	  	});
-	  	console.log("all updated")
 	  };
 	};
 };
@@ -134,10 +133,8 @@ loadGame = function() {
   	} else {
   		// showSaveWarningToggle();
   	}
-  	console.log(loadedGame)
   }).fail(function(loadedGame){
   	console.log('failed');
-  	console.log(loadedGame);
   });
 };
 
