@@ -154,6 +154,13 @@ saveGame = function() {
   });
 };
 
+signup = function(response) {
+	$('#user_profile_link').text(response["name"]);
+	$('.user_links').toggle();
+	$('.stock_view').remove();
+	$("#account_modal").foundation('reveal', 'close');
+};
+
 login = function(response) {
 	$('.stock_view').remove();
 	$('#user_profile_link').text(response["name"]);
@@ -277,6 +284,18 @@ $(document).on("ready page:load", function() {
       dataType: 'json'
     }).done(function(response) {
     	login(response);
+    });
+	});
+	$('#signup_form').submit(function(event){
+		event.preventDefault();
+		$contact_data = $(event.target);
+		$.ajax({
+      url: $contact_data.attr("action"),
+      type: $contact_data.attr("method"),
+      data: $contact_data.serialize(),
+      dataType: 'json'
+    }).done(function(response) {
+    	signup(response);
     });
 	});
   $(document).keydown(function(e){
