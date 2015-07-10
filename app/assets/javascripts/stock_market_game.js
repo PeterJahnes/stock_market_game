@@ -183,13 +183,18 @@ emailVerifCheck = function() {
 };
 
 login = function(response) {
-	$('.stock_view').remove();
-	$('#not_signed_in_warning').hide();
-	$('#user_profile_link').text(response["name"]);
-	$('.user_links').toggle();
-	$('.stock_view').remove();
-	loadGame();
-	$("#account_modal").foundation('reveal', 'close');
+	if (response.status == "failed") {
+		$('#login_warning').show();
+	} else if (response.status == "created") {
+		$('#login_warning').hide();
+		$('.stock_view').remove();
+		$('#not_signed_in_warning').hide();
+		$('#user_profile_link').text(response["name"]);
+		$('.user_links').toggle();
+		$('.stock_view').remove();
+		loadGame();
+		$("#account_modal").foundation('reveal', 'close');
+	};
 };
 
 logout = function() {
