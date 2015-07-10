@@ -1,6 +1,6 @@
-var toggleTradeForm, clearTradeForm, updateSidebarStock, createStockDiv, updateBankAccountHtml, dollarAttributes, makeTrade, sellStock, buyStock, updateStock, newStock, myBankAccount, offset, offsetCheck, marketOpenCheck, updateAllStocks
+var toggleTradeForm, clearTradeForm, updateSidebarStock, createStockDiv, updateBankAccountHtml, dollarAttributes, makeTrade, sellStock, buyStock, updateStock, newStock, myBankAccount, offset, offsetCheck, marketOpenCheck, updateAllStocks, loadGame, saveGame, signup, login, logout, emailVerifInterval
 
-myBankAccount = new BankAccount;
+myBankAccount = new BankAccount(10000);
 
 toggleTradeForm = function(type) {
 	if ( $('#buy_sell_button').val()===type ){
@@ -21,7 +21,7 @@ clearTradeForm = function() {
 };
 
 createStockDiv = function(myNewStock) {
-	var newClass = 'row '+myNewStock.symbol.toLowerCase();
+	var newClass = 'row stock_view '+myNewStock.symbol.toLowerCase();
 	var newClassSelector = '.'+myNewStock.symbol.toLowerCase();
 	$('#sidebar').append($('#sample').html());
 	$('#sidebar').children('div').last().attr('class', newClass);
@@ -50,13 +50,28 @@ updateBankAccountHtml = function() {
 	$('#bank_total').text("$"+(parseFloat(myBankAccount.cash)+parseFloat(myBankAccount.stockValue)).toFixed(2))
 };
 
+accountModalOpen = function(type) {
+	$("#account_modal").foundation('reveal', 'open');
+	accountModalTypeSelect(type);
+};
+
+accountModalTypeSelect = function(type) {
+	if (type === "login") {
+		$("#account_modal_login").show();
+		$("#account_modal_signup").hide();
+	} else if (type === "signup") {
+		$("#account_modal_login").hide();
+		$("#account_modal_signup").show();
+	};
+};
+
 dollarAttributes = function(atty){
 	var dollarAttys = {"priceBought":1,"currentPrice":1,"currentValue":1, "gainLoss":1};
 	if (dollarAttys[atty]) {
 		return "$"
 	} else {
 		return ""
-	}
+	};
 };
 
 offsetCheck = function(){
@@ -64,7 +79,6 @@ offsetCheck = function(){
 	  url: "/stock_market_game/offset",
 	  dataType: "json"
   }).done(function(offsetData){
-  	console.log("offsetCheck" + offsetData.offset)
   	offset = offsetData.offset;
   });
 };
@@ -76,8 +90,6 @@ marketOpenCheck = function(){
 	var dayOfWeek = d.getUTCDay();
 	if (newYorkTime>9 && newYorkTime<16 && dayOfWeek!=0 && dayOfWeek!=6) {
 		updateAllStocks();
-	} else {
-		console.log('not updated')
 	};
 };
 
@@ -85,7 +97,6 @@ updateAllStocks = function() {
 	if (Object.keys(myBankAccount.myOwnedStock).length>0){
 		$.support.cors = true;
 		var theStocks = '"' + Object.keys(myBankAccount.myOwnedStock).join('","') + '"';
-		console.log(theStocks);
 		var theUrl = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("+theStocks+")&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=updateStocks";
 		$.ajax({
 		  url: theUrl,
@@ -94,16 +105,103 @@ updateAllStocks = function() {
 	    jsonpCallback: "updateStocks"
 	  });
 	  updateStocks = function(data){
-	  	console.log(data)
 	  	var stocksData = data.query.results.quote;
 	  	$.each(stocksData, function(index,stock){
 	  		myBankAccount.myOwnedStock[stock.symbol].updatePrice(stock.LastTradePriceOnly);
 	  		updateSidebarStock(myBankAccount.myOwnedStock[stock.symbol]);
 	  	});
-	  	console.log("all updated")
 	  };
 	};
 };
+
+loadGame = function() {
+	$.ajax({
+	  url: "/stock_market_game/load",
+	  dataType: "json"
+  }).done(function(loadedGame){
+  	if (loadedGame['stat'] === true) {
+  		game = $.parseJSON(loadedGame["game"]);
+  		myBankAccount = new BankAccount(game["cash"])
+			updateBankAccountHtml();
+  		$.each(game.myOwnedStock, function(symbol,stock){
+		  	var myNewStock = new OwnedStock(stock["symbol"], stock["amount"], stock["priceBought"]);
+				myBankAccount.myOwnedStock[symbol] = myNewStock;
+				createStockDiv(myNewStock);
+  		});
+			updateAllStocks();
+  		// showSaveWarningToggle();
+  	} else {
+  		// showSaveWarningToggle();
+  	}
+  }).fail(function(loadedGame){
+  	console.log('failed');
+  });
+};
+
+saveGame = function() {
+	$.ajax({
+	  url: "/stock_market_game/save",
+	  dataType: "json",
+	  method: "POST",
+	  data: { game: { saved_game: JSON.stringify(myBankAccount) }}
+	}).done(function(saveMessage){
+  	// console.log("game saved" + saveMessage);
+  }).fail(function(saveMessage){
+  	// console.log("game save failed" + saveMessage);
+  });
+};
+
+signup = function(response) {
+	$('#user_profile_link').text(response["name"]);
+	$('.user_links').toggle();
+	$("#account_modal").foundation('reveal', 'close');
+	$('#not_signed_in_warning').hide();
+	$('#no_email_verification_warning').show();
+	emailVerifInterval = setInterval(emailVerifCheck,10000);
+};
+
+emailVerifCheck = function() {
+	$.ajax({
+	  url: "/user/email_verification_check",
+	  dataType: "json",
+	}).done(function(response){
+		if (response.status === true) {
+			clearInterval(emailVerifInterval);
+			$('#no_email_verification_warning').hide();
+			saveGame();
+		};
+  }).fail(function(response){
+  	console.log("email verification check failed");
+  });
+
+};
+
+login = function(response) {
+	$('.stock_view').remove();
+	$('#user_profile_link').text(response["name"]);
+	$('.user_links').toggle();
+	$('.stock_view').remove();
+	loadGame();
+	$("#account_modal").foundation('reveal', 'close');
+};
+
+logout = function() {
+	$.ajax({
+	  url: "/logout",
+	  dataType: "json",
+	}).done(function(saveMessage){
+		$('#user_profile_link').text("no user");
+		$('.user_links').toggle();
+		myBankAccount = new BankAccount(10000);
+		updateBankAccountHtml();
+		$('.stock_view').remove();
+		$('#not_signed_in_warning').show();
+  }).fail(function(saveMessage){
+  	console.log("logout failed");
+  });
+};
+
+
 
 makeTrade = function(symbol,amount,callback) {
 	$.support.cors = true;
@@ -121,9 +219,11 @@ makeTrade = function(symbol,amount,callback) {
 		} else if (thePrice*amount<myBankAccount.cash) {
 		  var myNewStock = new OwnedStock(symbol, amount, thePrice);
 			myBankAccount.myOwnedStock[symbol.toLowerCase()] = myNewStock;
+			myBankAccount.updateCash(((amount*thePrice)*-1).toFixed(2));
 			createStockDiv(myNewStock);
 			myBankAccount.updateStockValue();
 			updateBankAccountHtml();
+			saveGame();
 		} else {
 			alert('you dont have that much cash')
 		};
@@ -143,6 +243,7 @@ makeTrade = function(symbol,amount,callback) {
 		} else {
 			alert('you dont have that much cash')
 		};
+		saveGame();
 	};
 	sellStock = function(data) {
 	  var theStock = myBankAccount.myOwnedStock[symbol.toLowerCase()];
@@ -157,6 +258,7 @@ makeTrade = function(symbol,amount,callback) {
 			$('.'+symbol).hide();
 		};
 		updateSidebarStock(theStock);
+		saveGame();
 	};
 }
 
@@ -188,6 +290,36 @@ $(document).on("ready page:load", function() {
 			$('.'+symbol).show();
 		};
 	});
+	$('#login_form').submit(function(event){
+		event.preventDefault();
+		$contact_data = $(event.target);
+		$.ajax({
+      url: $contact_data.attr("action"),
+      type: $contact_data.attr("method"),
+      data: $contact_data.serialize(),
+      dataType: 'json'
+    }).done(function(response) {
+    	login(response);
+    });
+	});
+	$('#signup_form').submit(function(event){
+		event.preventDefault();
+		$contact_data = $(event.target);
+		$.ajax({
+      url: $contact_data.attr("action"),
+      type: $contact_data.attr("method"),
+      data: $contact_data.serialize(),
+      dataType: 'json'
+    }).done(function(response) {
+    	signup(response);
+    });
+	});
+  $(document).keydown(function(e){
+    if(e.keyCode === 32){
+      e.preventDefault();
+			toggleTradeForm("Buy");
+    };
+  });
 	$(document).on('click', '.buy_stock_link', function(event){
 		event.preventDefault();
 		var symbol = $(this).parent().parent().children().first().text().toLowerCase();
@@ -200,6 +332,19 @@ $(document).on("ready page:load", function() {
 		$('#sidebar_get_stock_type').val(symbol);
 		toggleTradeForm("Sell");
 	});
+	$(document).on('click', '#logout_link', function(event){
+		event.preventDefault();
+		logout();
+	});
+	$(document).on('click', '#login_link', function(event){
+		event.preventDefault();
+		accountModalOpen("login");
+	});
+	$(document).on('click', '#signup_link', function(event){
+		event.preventDefault();
+		accountModalOpen("signup");
+	});
+	loadGame();
 	offsetCheck();
 	var offsetChecker = setInterval(offsetCheck,32400000);
 	var updateInterval = setInterval(marketOpenCheck,10000);
@@ -212,7 +357,6 @@ function OwnedStock(symbol, amount, priceBought){
 	this.currentPrice = parseFloat(priceBought).toFixed(2);
 	this.currentValue = parseFloat(priceBought*amount).toFixed(2);
 	this.gainLoss = (0.00).toFixed(2);
-	myBankAccount.updateCash(((amount*priceBought)*-1).toFixed(2));
 	// update OwnedStock
 };
 
@@ -245,8 +389,8 @@ OwnedStock.prototype.sellPrice = function(removedAmount, price){
 	myBankAccount.updateCash((removedAmount*price)*-1);
 };
 
-function BankAccount(){
-	this.cash = parseFloat(10000.00);
+function BankAccount(cash){
+	this.cash = parseFloat(cash);
 	this.stockValue = parseFloat(0.00);
 	this.myOwnedStock = {};
 };

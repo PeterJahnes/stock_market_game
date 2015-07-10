@@ -8,11 +8,15 @@
   <section class="top-bar-section">
     <ul class="right">
       <% if current_user %>
-        <li><%= link_to current_user.first_name, current_user, id: "user_profile_link" %></li>
-        <li><%= link_to 'logout', logout_path, id: "logout_link" %></li>
+        <li><%= link_to current_user.first_name, current_user, id: "user_profile_link", style: 'display:block;', class: "user_links"%></li>
+        <li><%= link_to 'logout', logout_path, id: "logout_link", style: 'display:block;', class: "user_links"%></li>
+        <li><%= link_to 'login', login_path, id: "login_link", style: 'display:none;', class: "user_links"%></li>
+        <li><%= link_to 'signup', signup_path, id: "signup_link", style: 'display:none;', class: "user_links"%></li>
       <% else %>
-        <li><%= link_to 'login', login_path, id: "login_link" %></li>
-        <li><%= link_to 'signup', signup_path, id: "signup_link" %></li>
+        <li><%= link_to 'username', current_user, id: "user_profile_link", style: 'display:none;', class: "user_links"%></li>
+        <li><%= link_to 'logout', logout_path, id: "logout_link", style: 'display:none;', class: "user_links"%></li>
+        <li><%= link_to 'login', login_path, id: "login_link", style: 'display:block;', class: "user_links"%></li>
+        <li><%= link_to 'signup', signup_path, id: "signup_link", style: 'display:block;', class: "user_links"%></li>
       <% end %>
     </ul>
   </section>
