@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
 	      format.json { render json: {status: :created, name: @user.first_name} }
 	    else
 	      format.html { render :new }
-	      format.json { render json: {status: "failed to login"} }
+	      format.json { render json: {status: :failed} }
 	    end
     end
 	end
