@@ -178,6 +178,7 @@ emailVerifCheck = function() {
 
 login = function(response) {
 	$('.stock_view').remove();
+	$('#not_signed_in_warning').hide();
 	$('#user_profile_link').text(response["name"]);
 	$('.user_links').toggle();
 	$('.stock_view').remove();
