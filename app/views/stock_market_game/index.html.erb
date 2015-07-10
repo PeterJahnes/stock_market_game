@@ -121,12 +121,16 @@
 	</div>
 	<div class = "large-3 columns panel">
 		<div class = "row">
-			<div class = "large-12 columns warning">
-				<a href="https://www.yahoo.com/?ilc=401" target="_blank"> <img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/> </a>
+			<div class = "large-12 columns">
+				<a href="https://www.yahoo.com/?ilc=401" target="_blank"> <img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>
 			</div>
-			<div class = "large-12 columns warning">
+			<div class = "large-12 columns warning" id = "not_signed_in_warning" style = "display:<%= !current_user ? "block" : "none" %>;">
 				<h4>Not Saved!</h4>
 				<p>login or signup to save</p>
+			</div>
+			<div class = "large-12 columns warning" id = "no_email_verification_warning" style = "display:<%= current_user && current_user.email_verification != "true" ? "block" : "none" %>;">
+				<h4>Not Saved!</h4>
+				<p>verify your email by clicking the link in the email that was sent to you</p>
 			</div>
 			<div class = "large-12 columns">
 				<h3>Account details</h3>
