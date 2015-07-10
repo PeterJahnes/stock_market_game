@@ -1,4 +1,4 @@
-var toggleTradeForm, clearTradeForm, updateSidebarStock, createStockDiv, updateBankAccountHtml, dollarAttributes, makeTrade, sellStock, buyStock, updateStock, newStock, myBankAccount, offset, offsetCheck, marketOpenCheck, updateAllStocks, loadGame, saveGame, signup, login, logout
+var toggleTradeForm, clearTradeForm, updateSidebarStock, createStockDiv, updateBankAccountHtml, dollarAttributes, makeTrade, sellStock, buyStock, updateStock, newStock, myBankAccount, offset, offsetCheck, marketOpenCheck, updateAllStocks, loadGame, saveGame, signup, login, logout, emailVerifInterval
 
 myBankAccount = new BankAccount(10000);
 
@@ -145,17 +145,35 @@ saveGame = function() {
 	  method: "POST",
 	  data: { game: { saved_game: JSON.stringify(myBankAccount) }}
 	}).done(function(saveMessage){
-  	console.log("game saved" + saveMessage);
+  	// console.log("game saved" + saveMessage);
   }).fail(function(saveMessage){
-  	console.log("game save failed" + saveMessage);
+  	// console.log("game save failed" + saveMessage);
   });
 };
 
 signup = function(response) {
 	$('#user_profile_link').text(response["name"]);
 	$('.user_links').toggle();
-	$('.stock_view').remove();
 	$("#account_modal").foundation('reveal', 'close');
+	$('#not_signed_in_warning').hide();
+	$('#no_email_verification_warning').show();
+	emailVerifInterval = setInterval(emailVerifCheck,10000);
+};
+
+emailVerifCheck = function() {
+	$.ajax({
+	  url: "/user/email_verification_check",
+	  dataType: "json",
+	}).done(function(response){
+		if (response.status === true) {
+			clearInterval(emailVerifInterval);
+			$('#no_email_verification_warning').hide();
+			saveGame();
+		};
+  }).fail(function(response){
+  	console.log("email verification check failed");
+  });
+
 };
 
 login = function(response) {
@@ -177,6 +195,7 @@ logout = function() {
 		myBankAccount = new BankAccount(10000);
 		updateBankAccountHtml();
 		$('.stock_view').remove();
+		$('#not_signed_in_warning').show();
   }).fail(function(saveMessage){
   	console.log("logout failed");
   });
