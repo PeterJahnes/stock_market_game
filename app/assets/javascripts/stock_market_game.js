@@ -277,19 +277,24 @@ $(document).on("ready page:load", function() {
 	});
 	$('#sidebar_get_stock').submit(function(event){
 		event.preventDefault();
-		var symbol, amount
-		symbol = $('#sidebar_get_stock_type').val().toLowerCase();
-		amount = $('#sidebar_get_stock_amount').val();
-		clearTradeForm();
-		toggleTradeForm($('#buy_sell_button').val());
-		if (!myBankAccount.myOwnedStock[symbol]){
-			makeTrade(symbol,amount,'newStock');
-		} else if( $('#buy_sell_button').val()==="Sell" ) {
-			makeTrade(symbol,-Math.abs(amount),'sellStock');
-		} else if( $('#buy_sell_button').val()==="Buy") {
-			makeTrade(symbol,amount,'buyStock');
-			$('.'+symbol).show();
-		};
+		if ($('#sidebar_get_stock_amount').val() !="") {
+			$('#enter_value_warning').hide();
+			var symbol, amount
+			symbol = $('#sidebar_get_stock_type').val().toLowerCase();
+			amount = $('#sidebar_get_stock_amount').val();
+			clearTradeForm();
+			toggleTradeForm($('#buy_sell_button').val());
+			if (!myBankAccount.myOwnedStock[symbol]){
+				makeTrade(symbol,amount,'newStock');
+			} else if( $('#buy_sell_button').val()==="Sell" ) {
+				makeTrade(symbol,-Math.abs(amount),'sellStock');
+			} else if( $('#buy_sell_button').val()==="Buy") {
+				makeTrade(symbol,amount,'buyStock');
+				$('.'+symbol).show();
+			};
+		} else {
+			$('#enter_value_warning').show();
+		}
 	});
 	$('#login_form').submit(function(event){
 		event.preventDefault();
@@ -315,12 +320,6 @@ $(document).on("ready page:load", function() {
     	signup(response);
     });
 	});
-  $(document).keydown(function(e){
-    if(e.keyCode === 32){
-      e.preventDefault();
-			toggleTradeForm("Buy");
-    };
-  });
 	$(document).on('click', '.buy_stock_link', function(event){
 		event.preventDefault();
 		var symbol = $(this).parent().parent().children().first().text().toLowerCase();

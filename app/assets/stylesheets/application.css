@@ -15,6 +15,6 @@
  *= require foundation_and_overrides
 
  */
-.warning p, .warning h4 {
+.warning p, .warning h4, .warning h5 {
 	color: red;
 }
