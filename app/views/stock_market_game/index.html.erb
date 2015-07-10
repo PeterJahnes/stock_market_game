@@ -7,6 +7,9 @@
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
 <div id="account_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+	<div id = "login_warning" class = "warning" style = "display:none;">
+		<p>Username or Password incorrect, Please try again.</p>
+	</div>
 	<div class = "row" id = "account_modal_login">
 		<%= form_for :session, url: sessions_path, html: {id: "login_form"} do |f|%>
 		  <div>

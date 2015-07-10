@@ -96,8 +96,14 @@ marketOpenCheck = function(){
 updateAllStocks = function() {
 	if (Object.keys(myBankAccount.myOwnedStock).length>0){
 		$.support.cors = true;
-		var theStocks = '"' + Object.keys(myBankAccount.myOwnedStock).join('","') + '"';
-		var theUrl = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("+theStocks+")&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=updateStocks";
+		var theUrl
+		if (Object.keys(myBankAccount.myOwnedStock).length == 1) {
+			var stock = Object.keys(myBankAccount.myOwnedStock).join();
+			theUrl = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%3D%22"+stock+"%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="+callback;
+		} else {
+			var theStocks = '"' + Object.keys(myBankAccount.myOwnedStock).join('","') + '"';
+			theUrl = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("+theStocks+")&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=updateStocks";
+		};
 		$.ajax({
 		  url: theUrl,
 		  dataType: "jsonp",
@@ -177,13 +183,18 @@ emailVerifCheck = function() {
 };
 
 login = function(response) {
-	$('.stock_view').remove();
-	$('#not_signed_in_warning').hide();
-	$('#user_profile_link').text(response["name"]);
-	$('.user_links').toggle();
-	$('.stock_view').remove();
-	loadGame();
-	$("#account_modal").foundation('reveal', 'close');
+	if (response.status == "failed") {
+		$('#login_warning').show();
+	} else if (response.status == "created") {
+		$('#login_warning').hide();
+		$('.stock_view').remove();
+		$('#not_signed_in_warning').hide();
+		$('#user_profile_link').text(response["name"]);
+		$('.user_links').toggle();
+		$('.stock_view').remove();
+		loadGame();
+		$("#account_modal").foundation('reveal', 'close');
+	};
 };
 
 logout = function() {
