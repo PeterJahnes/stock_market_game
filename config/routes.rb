@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
   resources :users, except: [:index, :destroy]
   get '/signup' => 'users#new'
+  get '/verification/:code' => 'users#verification'
+  get '/user/email_verification_check' => 'users#verification_check'
+  
   resources :sessions, only: [:new, :create, :destroy]
   get '/login' => 'sessions#new'
   get '/logout' => 'sessions#destroy'
