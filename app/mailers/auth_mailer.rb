@@ -1,8 +1,8 @@
 class AuthMailer < ActionMailer::Base
-    default from: "do-not-reply@stockmarketgame.honovert.com"
+  default from: ENV['DNR_FROM']
 
-    def email_verification_email(email, code)
-        @code = code
-        mail(to: email, subject: 'Email Verification Request')
-    end
+  def email_verification_email(email, code)
+      @code = code
+      mail(to: email, subject: 'Email Verification Request')
+  end
 end
